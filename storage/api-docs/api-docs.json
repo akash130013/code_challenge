@@ -1,0 +1,59 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "BRDSEYE API Documentation",
+        "contact": {
+            "name": "Support Team",
+            "email": "sudhir.pandey@appinventiv.com"
+        },
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/user/login": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "User can login",
+                "operationId": "/api/user/login",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "email",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Error: Bad request."
+                    },
+                    "422": {
+                        "description": "Parameter Required"
+                    },
+                    "401": {
+                        "description": "Unauthorised"
+                    },
+                    "500": {
+                        "description": "Something went wrong"
+                    }
+                }
+            }
+        }
+    }
+}
