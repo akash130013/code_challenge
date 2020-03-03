@@ -14,61 +14,11 @@ use \Validator;
 
 class HomeController extends Controller
 {
-  /**
-   * @OA\Info(
-   *      title="BRDSEYE API Documentation",
-   *      version="1.0",
-   *      @OA\Contact(
-   *          email="sudhir.pandey@appinventiv.com",
-   *          name="Support Team"
-   *      ),
-   * )
-   */
-
-  /**
-   * @OA\Get(
-   *      path="/api/user/login",
-   *      operationId="/api/user/login",
-   *      tags={"Users"},
-   *      summary="User can login",
-   *    @OA\Parameter(
-   *         name="name",
-   *         in="query",
-   *         description="name",
-   *         required=true,
-   *         @OA\Schema(type="string")
-   *     ),
-   *    @OA\Parameter(
-   *         name="email",
-   *         in="query",
-   *         description="email",
-   *         required=true,
-   *         @OA\Schema(type="string")
-   *     ),
-   *    @OA\Response(
-   *         response=200,
-   *          description="Success"
-   *     ),
-   *    @OA\Response(
-   *         response="400",
-   *         description="Error: Bad request.",
-   *     ),
-   *    @OA\Response(
-   *         response="422",
-   *         description="Parameter Required",
-   *     ),
-   *   @OA\Response(
-   *         response="401",
-   *         description="Unauthorised",
-   *     ),
-   *  @OA\Response(
-   *         response="500",
-   *         description="Something went wrong",
-   *     )
-   * )
-   */
-
-
+  
+/**
+ * @param $request
+ * @desc used to get discount
+ */
   public function index(Request $request)
   {
 
@@ -93,10 +43,12 @@ class HomeController extends Controller
       $data = $request->all();
       $data['password'] = Hash::make('123456');
 
-
+    /**
+     * used to get random discount
+     */
       $discount = $this->getRandomDiscount();
      
-      if ($discount) {
+      if ($discount) {  //check wether it giving discount or not
         $customerDiscount = CustomerDiscount::where('discount', $discount)->first();
         $customerDiscount->decrement('remaining_times', 1); // decrease 1 count
         $customerDiscount->save();
@@ -105,7 +57,7 @@ class HomeController extends Controller
         User::create($data);
         $http_response_header = ['message' => $message, 'code' => Response::HTTP_OK, 'discount' => $discount];
 
-      }else{
+      }else{ //If there is no discount left
         $message="No more coupon left";
         $http_response_header = ['message' => $message];
 
@@ -123,19 +75,19 @@ class HomeController extends Controller
    */
   private function getRandomDiscount()
   {
-    $discount = CustomerDiscount::where('remaining_times','>',0)->get()->toArray();
+    $discount = CustomerDiscount::where('remaining_times','>',0)->get()->toArray(); //check remaing times
     $dicountCodeArray = [];
    
     if(count($discount)){
+
       foreach($discount as $dis){
        for($i=1; $i<=$dis['remaining_times'];$i++){
         $dicountCodeArray[]=$dis['discount'];
-       }
-        
+       } 
       }
       
-      shuffle($dicountCodeArray);
-      return $dicountCodeArray[rand(0,count($dicountCodeArray)-1)];
+      shuffle($dicountCodeArray);   //shuffling array 
+      return $dicountCodeArray[rand(0,count($dicountCodeArray)-1)];  //used to get random discounts
     }else{
       return 0;
     }
